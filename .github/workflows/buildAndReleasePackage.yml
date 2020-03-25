@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.101
         source-url: https://nuget.pkg.github.com/delormej/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}                
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}        
     - name: Install dependencies
       run: dotnet restore
     - name: Build

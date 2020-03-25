@@ -28,7 +28,7 @@ namespace jasondel.Tools
 
         private static void InternalLog(string message, int stackPosition = 2)
         {
-            const string DateFormat = "dd/MMM/yyyy hh:mm:ss.ff zzz";
+            const string DateFormat = "MM/dd/yyyy hh:mm:ss.ffff";
             try
             {
                 StackTrace stackTrace = new StackTrace();

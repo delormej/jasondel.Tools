@@ -43,7 +43,7 @@ The easiest way is to add a `nuget.config` file like this in the same directory 
 Then simply add the package:
 
 ```bash
-dotnet package add jasondel.Tools
+dotnet add package jasondel.Tools
 ```
 
 ...or directly modify your csproj to add the reference:

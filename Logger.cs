@@ -13,25 +13,30 @@ namespace jasondel.Tools
         /// </summary>
         public static void Log(string message, Exception e = null)
         {
+            ConsoleColor defaultColor = Console.ForegroundColor;
             StringBuilder sb = new StringBuilder();
             TextWriter writer = null;
+            
             sb.AppendLine(message);
             if (e != null)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 writer = Console.Error;
-                sb.Append("\tERROR: " + e.Message);
+
+                sb.AppendLine("\tERROR: " + e.Message);
                 if (e.InnerException != null)
-                    sb.Append("\n\tINNER ERROR: " + e.InnerException.Message);
+                    sb.AppendLine("\tINNER ERROR: " + e.InnerException.Message);
             }
             else
             {
                 writer = Console.Out;                
             }
-            
-            ConsoleColor defaultColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
+
             InternalLog(writer, sb.ToString());
-            Console.ForegroundColor = defaultColor;
+            
+            // Assign color back.
+            if (Console.ForegroundColor != defaultColor)
+                Console.ForegroundColor = defaultColor;
         }
 
         private static void InternalLog(TextWriter writer, string message, int stackPosition = 2)
@@ -43,7 +48,7 @@ namespace jasondel.Tools
 
                 string method = stackTrace.GetFrame(stackPosition).GetMethod().Name;
                 string type = stackTrace.GetFrame(stackPosition).GetMethod().ReflectedType.Name;
-                writer.WriteLine($"[{DateTime.Now.ToString(DateFormat)}, {type}:{method}] {message}");            
+                writer.Write($"[{DateTime.Now.ToString(DateFormat)}, {type}:{method}] {message}");
             }
             catch (Exception e)
             {

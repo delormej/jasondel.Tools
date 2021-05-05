@@ -1,11 +1,32 @@
 ﻿using System;
 using System.Text;
+using System.Text.Json;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace jasondel.Tools
 {
-    public static class Logger
+    public class Logger
     {
+        static ILogger<Logger> _logger;
+
+        static Logger()
+        {
+            using ILoggerFactory loggerFactory =
+                LoggerFactory.Create(builder =>
+                    builder.AddJsonConsole(options =>
+                    {
+                        options.IncludeScopes = false;
+                        options.TimestampFormat = "MM/dd/yyyy hh:mm:ss.ff";
+                        options.JsonWriterOptions = new JsonWriterOptions
+                        {
+                            Indented = false
+                        };
+                    }));
+
+            _logger = loggerFactory.CreateLogger<Logger>();         
+        }
+
         public static void Log(string message)
         {
             InternalLog(message);
@@ -28,19 +49,19 @@ namespace jasondel.Tools
 
         private static void InternalLog(string message, int stackPosition = 2)
         {
-            const string DateFormat = "MM/dd/yyyy hh:mm:ss.ff";
             try
             {
                 StackTrace stackTrace = new StackTrace();
 
                 string method = stackTrace.GetFrame(stackPosition).GetMethod().Name;
                 string type = stackTrace.GetFrame(stackPosition).GetMethod().ReflectedType.Name;
-                Console.WriteLine($"[{DateTime.Now.ToString(DateFormat)}, {type}:{method}] {message}");            
+
+                _logger.LogInformation("{type}:{method} {message}", type, method, message);
             }
             catch (Exception e)
             {
-                Console.WriteLine($"[{DateTime.Now.ToString(DateFormat)} (log failure)] {message}");
-                Console.WriteLine($"\t{e.Message}");
+                _logger.LogCritical("(Failure trying to log:) {message}\n\tInner Exception:{exception}", 
+                    message, e.Message);
             }
         }
     }

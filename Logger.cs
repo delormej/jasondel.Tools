@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Google.Cloud.Logging.Console;
 
 namespace jasondel.Tools
 {
@@ -14,15 +15,12 @@ namespace jasondel.Tools
         {
             using ILoggerFactory loggerFactory =
                 LoggerFactory.Create(builder =>
-                    builder.AddJsonConsole(options =>
-                    {
-                        options.IncludeScopes = false;
-                        options.TimestampFormat = "MM/dd/yyyy hh:mm:ss.ff";
-                        options.JsonWriterOptions = new JsonWriterOptions
-                        {
-                            Indented = false
-                        };
-                    }));
+                {
+                    builder.AddConsoleFormatter<GoogleCloudConsoleFormatter, GoogleCloudConsoleFormatterOptions>(options => 
+                        options.IncludeScopes = true);
+                    builder.AddConsole(options => 
+                        options.FormatterName = nameof(GoogleCloudConsoleFormatter));
+                });
 
             _logger = loggerFactory.CreateLogger<Logger>();         
         }

@@ -57,5 +57,5 @@ dotnet add package jasondel.Tools
 ...or directly modify your csproj to add the reference:
 
 ```xml
-    <PackageReference Include="jasondel.Tools" Version="1.0.*" />
+    <PackageReference Include="jasondel.Tools" Version="2.*" />
 ```

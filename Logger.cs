@@ -25,9 +25,10 @@ namespace jasondel.Tools
             _logger = loggerFactory.CreateLogger<Logger>();         
         }
 
-        public static void Log(string message)
+        public static void Log(string message,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
         {
-            InternalLog(message);
+            InternalLog(message, memberName: memberName);
         }
 
         public static void Log(string message, Exception e)
@@ -45,13 +46,13 @@ namespace jasondel.Tools
             Console.ForegroundColor = defaultColor;
         }
 
-        private static void InternalLog(string message, int stackPosition = 2)
+        private static void InternalLog(string message, int stackPosition = 2, string memberName = null)
         {
             try
             {
                 StackTrace stackTrace = new StackTrace();
 
-                string method = stackTrace.GetFrame(stackPosition).GetMethod().Name;
+                string method = memberName ?? stackTrace.GetFrame(stackPosition).GetMethod().Name;
                 string type = stackTrace.GetFrame(stackPosition).GetMethod().ReflectedType.Name;
 
                 _logger.LogInformation("{type}:{method} {message}", type, method, message);
